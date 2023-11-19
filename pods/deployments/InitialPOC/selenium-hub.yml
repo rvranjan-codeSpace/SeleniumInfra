@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: selenium-hub
+  namespace: selenium-grid
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: selenium-hub
+  template:
+    metadata:
+      labels:
+        app: selenium-hub
+    spec:
+      nodeSelector:
+        nodeType: hub
+      containers:
+        - name: selenium-hub
+          image: public.ecr.aws/adslot/selenium/hub:4.9.0-20230421
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 4442 # SE_EVENT_BUS_PUBLISH_PORT
+            - containerPort: 4443 # SE_EVENT_BUS_SUBSCRIBE_PORT
+            - containerPort: 4444 # Default Hub Port
+          livenessProbe:
+            httpGet:
+              path: /wd/hub/status
+              port: 4444
+            initialDelaySeconds: 30
+            timeoutSeconds: 5

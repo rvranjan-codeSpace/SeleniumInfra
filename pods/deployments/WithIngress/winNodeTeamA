@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: selenium-grid-a
+  name: selenium-chrome-node-team-a
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: selenium-chrome-node-team-a
+  template:
+    metadata:
+      labels:
+        app: selenium-chrome-node-team-a
+    spec:
+      nodeSelector:
+        nodeType: windows
+      containers:
+        - name: selenium-chrome-node-team-a
+          image: public.ecr.aws/adslot/selenium/node-chrome:4.9.0-20230421
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "500m"
+          ports:
+            - containerPort: 5555
+          env:
+            - name: SE_EVENT_BUS_HOST
+              value: selenium-srv-team-a
+            - name: SE_EVENT_BUS_PUBLISH_PORT
+              value: "4442"
+            - name: SE_EVENT_BUS_SUBSCRIBE_PORT
+              value: "4443"
+            - name: SE_NODE_SESSION_TIMEOUT
+              value: "300"
+            - name: SE_SESSION_REQUEST_TIMEOUT
+              value: "300"
+            - name: SE_SESSION_RETRY_INTERVAL
+              value: "5"

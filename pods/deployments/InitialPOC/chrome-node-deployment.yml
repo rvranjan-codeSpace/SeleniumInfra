@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: selenium-grid
+  name: selenium-chrome-node
+spec:
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: selenium-chrome-node
+  template:
+    metadata:
+      labels:
+        app: selenium-chrome-node
+    spec:
+      containers:
+        - name: selenium-chrome-node
+          image: public.ecr.aws/adslot/selenium/node-chrome:4.9.0-20230421
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 5555
+          env:
+            - name: HUB_HOST
+              value: "selenium-srv"
+            - name: HUB_PORT
+              value: "4444"

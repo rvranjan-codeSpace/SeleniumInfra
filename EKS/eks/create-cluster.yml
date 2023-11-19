@@ -1,0 +1,32 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: selenium-grid-cluster-one
+  region: us-east-1
+  version: "1.28"
+  tags:
+    Owner: "rajranjan@altimetrik.com"
+    Application: "selenium"
+    Project: "broadridge"
+    Environment: "QA"
+iam:
+  withOIDC: true # Enable OIDC if not already enabled
+  serviceRoleARN: "arn:aws:iam::536007090040:role/eksClusterRole"
+
+vpc:
+  id: "vpc-053112a1bd01e0d6a"
+  cidr: "10.0.0.0/16"
+  subnets:
+    private:
+      us-east-1d:
+        id: "subnet-0fef1472375502b4b"
+      us-east-1b:
+        id: "subnet-04634566e3be3f848"
+    public:
+      us-east-1b:
+        id: "subnet-0e2b6eb14083ff1e9"
+      us-east-1d:
+        id: "subnet-0e5844f01963d22e2"
+  clusterEndpoints:
+    publicAccess: true # Allow public access to the cluster endpoint
+    privateAccess: true

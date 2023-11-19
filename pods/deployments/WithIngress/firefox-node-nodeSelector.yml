@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: selenium-grid-a
+  name: selenium-firefox-node-team-b
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: selenium-firefox-node-team-b
+  template:
+    metadata:
+      labels:
+        app: selenium-firefox-node-team-b
+    spec:
+      nodeSelector:
+        nodeType: chromeB
+      containers:
+        - name: selenium-firefox-node-team-b
+          image: public.ecr.aws/d0f5m9m3/selenium/node-firefox:4.11.0
+          resources:
+            limits:
+              memory: "1Gi"
+          ports:
+            - containerPort: 5555
+          env:
+            - name: SE_EVENT_BUS_HOST
+              value: selenium-srv-team-b
+            - name: SE_EVENT_BUS_PUBLISH_PORT
+              value: "4442"
+            - name: SE_EVENT_BUS_SUBSCRIBE_PORT
+              value: "4443"

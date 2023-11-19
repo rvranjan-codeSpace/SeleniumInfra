@@ -1,0 +1,27 @@
+# dev-cluster.yaml
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: selenium-grid-cluster-one
+  region: us-east-1
+
+managedNodeGroups:
+  - name: selenium-hub-nodes
+    labels: { role: workers }
+    instanceType: t3.medium
+    desiredCapacity: 4
+    volumeSize: 80
+    privateNetworking: true
+    tags:
+      Owner: "rajranjan@altimetrik.com"
+      Application: "selenium"
+      Project: "broadridge"
+      Environment: "QA"
+    iam:
+      instanceRoleARN: arn:aws:iam::536007090040:role/AmazonEKSNodeRole
+      withAddonPolicies:
+        autoScaler: true
+    ssh:
+      allow: true
+      publicKeyName: rajranjan

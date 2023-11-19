@@ -1,0 +1,38 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: selenium-grid-a
+  name: ingress-selenium-grid
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/tags: "Owner=rajranjan@altimetrik.com,Project=broadridge,Application=selenium,Environment=QA"
+    alb.ingress.kubernetes.io/load-balancer-attributes: access_logs.s3.enabled=true,access_logs.s3.bucket=loadbalancerlogs-broadridge,access_logs.s3.prefix=sel-logs-folder
+spec:
+  ingressClassName: alb
+  rules:
+    - host: teama.my-selenium-grid.college
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: selenium-srv-team-a
+                port:
+                  number: 4444
+    - host: teamb.my-selenium-grid.college
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: selenium-srv-team-b
+                port:
+                  number: 4444
+  defaultBackend:
+    service:
+      name: selenium-srv-team-a
+      port:
+        number: 4444
